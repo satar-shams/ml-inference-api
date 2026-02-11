@@ -1,15 +1,17 @@
-# app/inference/model.py
+from app.core.logger import logger
+from app.core.config import DEFAULT_TEXT
 
 class DummyModel:
-    def __init__(self):
-        # Initialize model or any resources
-        pass
+    def __init__(self, default_text=DEFAULT_TEXT):
+        self.default_text = default_text
 
     def predict(self, text: str) -> str:
+        if not text:
+            text = self.default_text
         try:
-            # Dummy logic
             result = f"predicted({text})"
+            logger.info("Model prediction successful for input: %s", text)
             return result
         except Exception as e:
-            # Handle inference errors gracefully
+            logger.error("Inference error: %s", str(e))
             raise RuntimeError(f"Inference error: {str(e)}")

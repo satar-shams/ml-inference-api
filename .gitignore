@@ -6,20 +6,37 @@ __pycache__/
 
 # Virtual Environment
 venv/
+
+# Tests folder (optional, usually not pushed)
 tests/
+
+# Environment files
 .env
 .env.*
 
-# IDE
+# IDE / Editor
 .vscode/
 .idea/
+*.code-workspace
 
 # OS
 .DS_Store
 Thumbs.db
+*.swp
+*~
 
 # Logs
 *.log
+*.tmp
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+
+# Git
+.git
+.gitignore
 
 # Docker (optional)
-*.env
+.dockerignore

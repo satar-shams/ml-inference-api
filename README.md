@@ -238,3 +238,121 @@ Model swapping without changing endpoints
 
 Clear responsibility boundaries
 
+
+# ML Inference API – Step 4
+
+Production-ready Python FastAPI project for ML inference.
+
+---
+
+## 📂 Project Structure
+
+ml-inference-api/
+├── app/
+│ ├── api/
+│ │ └── main.py # FastAPI endpoints
+│ ├── inference/
+│ │ └── model.py # Inference logic
+│ └── core/
+│ ├── config.py # Load environment variables
+│ └── logger.py # Structured logging
+├── tests/
+├── Dockerfile
+├── requirements.txt
+├── README.md
+├── .env
+├── .env.example
+├── .gitignore
+└── .dockerignore
+
+
+---
+
+## ⚡ Features
+
+- FastAPI endpoints: `/health`, `/predict`, `/square_numbers`
+- Dummy ML inference logic (`DummyModel`)  
+- Structured JSON logging  
+- Configurable via `.env` and `python-dotenv`  
+- Environment-based defaults, no hardcoded values  
+- Ready for Docker and cloud deployment  
+
+---
+
+## 🏃 How to Run Locally
+
+### 1. Using Python `-m` (Recommended)
+
+From **project root**:
+
+```bash
+python -m app.api.main
+Automatically loads .env via python-dotenv
+
+Starts Uvicorn server
+
+Host/Port read from .env or defaults (0.0.0.0:8000)
+
+2. Optional: Using PYTHONPATH (Professional)
+export PYTHONPATH=$PWD
+python ./app/api/main.py
+Tells Python to treat the current folder as root
+
+No code changes required
+
+Useful if you have multiple nested packages
+
+🐳 How to Run with Docker
+Build image:
+
+docker build -t ml-inference-api .
+Run container:
+
+docker run --env-file .env -p 8000:8000 ml-inference-api
+Healthcheck endpoint:
+
+curl http://localhost:8000/health
+Professional Docker Notes:
+
+WORKDIR /app sets root inside container
+
+uvicorn app.api.main:app runs API directly
+
+Logs are written to stdout, captured by Docker runtime
+
+Environment variables can be overridden at runtime
+
+🛠 Production-Ready Practices Implemented (Step 4)
+Structured JSON logging (app/core/logger.py)
+
+Error handling with proper HTTP responses
+
+Environment-based configuration (.env + app/core/config.py)
+
+Removed hardcoded values in API inputs and model logic
+
+Separation of concerns:
+
+app/api/main.py → API layer
+
+app/inference/model.py → Inference layer
+
+app/core/config.py → Configuration
+
+app/core/logger.py → Logging
+
+📦 Requirements
+fastapi
+uvicorn
+pydantic
+python-dotenv
+✅ Step 4 Commit Notes
+Day 4: Production-ready Python practices complete
+
+Logging, env vars, removed hardcoded values
+
+Ready for Docker and cloud deployment
+
+main.py can run locally or in container without code changes
+
+
