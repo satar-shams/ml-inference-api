@@ -135,3 +135,106 @@ This README is mentor-ready, GitHub-ready, and future-proof.
 
 Next official step is Day 3 – Inference Logic Separation
 Whenever you’re ready, we continue 🚀
+
+🏗 Updated Project Structure
+ml-inference-api/
+├── app/
+│   ├── api/
+│   │   └── main.py          # FastAPI routes
+│   ├── inference/
+│   │   └── model.py         # Inference logic
+│   └── core/
+├── tests/
+├── Dockerfile
+├── requirements.txt
+└── README.md
+
+🧠 Architecture Concept
+
+The system is now divided into two clear layers:
+
+1️⃣ API Layer (main.py)
+
+Handles HTTP requests
+
+Validates input using Pydantic
+
+Calls inference module
+
+Handles HTTP errors
+
+Returns structured JSON responses
+
+2️⃣ Inference Layer (model.py)
+
+Contains model logic
+
+Encapsulates prediction behavior
+
+Handles inference-related errors
+
+Independent from FastAPI or HTTP logic
+
+🔁 Request Flow
+Client Request
+     ↓
+FastAPI Endpoint (/predict)
+     ↓
+DummyModel.predict()
+     ↓
+Prediction Result
+     ↓
+JSON Response
+
+📌 Example: model.py
+class DummyModel:
+    def __init__(self):
+        pass
+
+    def predict(self, text: str) -> str:
+        try:
+            result = f"predicted({text})"
+            return result
+        except Exception as e:
+            raise RuntimeError(f"Inference error: {str(e)}")
+
+📌 Example: API Usage
+
+Request:
+
+POST /predict
+{
+  "text": "Hello"
+}
+
+
+Response:
+
+{
+  "input": "Hello",
+  "prediction": "predicted(Hello)"
+}
+
+✅ Why Separation of Concerns Matters
+
+Improves maintainability
+
+Makes inference logic testable independently
+
+Allows easy replacement with real ML models
+
+Keeps API layer clean
+
+Follows production engineering standards
+
+🚀 Production Readiness Improvement
+
+The API no longer contains model logic directly.
+This enables:
+
+Easier scaling
+
+Model swapping without changing endpoints
+
+Clear responsibility boundaries
+

@@ -1,17 +1,31 @@
-from fastapi import FastAPI
+# app/api/main.py
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from app.inference.model import DummyModel
+
 app = FastAPI(title="ML Inference API", version="1.0")
+
+model = DummyModel()  # load model at startup
 
 # Health check
 @app.get("/health")
 def health():
     return {"status": "healthy"}
 
-# Predict endpoint with dummy logic
+# Predict endpoint
 class InputData(BaseModel):
     text: str = "txt"
 
+@app.post("/predict")
+def predict(data: InputData):
+    try:
+        prediction = model.predict(data.text)
+        return {"input": data.text, "prediction": prediction}
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+"""
 @app.post("/predict")
 def predict(data: InputData):
     return {"input": data.text, "prediction": "dummy_result"}
@@ -28,3 +42,5 @@ def square_number(data: NumberData):
     except Exception as e:
         return {"error": str(e)}
 # other parts will be added while using cloud including security and etc
+
+"""
