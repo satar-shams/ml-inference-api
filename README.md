@@ -442,3 +442,146 @@ Structured the project (Day 2–3)
 Added production-ready Python practices (Day 4)
 
 Containerized the service (Day 5)
+
+
+🟢 Day 6 – Dockerization (Production-Oriented Improvements)
+🎯 Objective
+
+Enhance the Docker container to meet production standards by improving:
+
+Security
+
+Reliability
+
+Image optimization
+
+Observability
+
+Day 5 ensured the service runs inside a container.
+Day 6 ensures the container is safe and production-ready.
+
+🔹 1. Slim Base Image
+
+We use:
+
+FROM python:3.11-slim
+
+Why?
+
+Smaller image size
+
+Faster pull time
+
+Reduced attack surface
+
+Better cloud deployment performance
+
+Using slim images is a standard best practice in production environments.
+
+🔹 2. .dockerignore File
+
+A .dockerignore file was added to prevent unnecessary files from being copied into the Docker image.
+
+Excluded files include:
+
+.git
+
+.env
+
+venv
+
+__pycache__
+
+log files
+
+Why?
+
+Reduces image size
+
+Improves build speed
+
+Prevents accidental exposure of sensitive data
+
+Keeps the container clean
+
+This improves both performance and security.
+
+🔹 3. Non-Root User
+
+The container now runs under a non-root user:
+
+RUN useradd -m appuser
+USER appuser
+
+Why?
+
+By default, Docker containers run as root.
+Running as root increases security risk if the container is compromised.
+
+Using a non-root user:
+
+Follows container security best practices
+
+Minimizes potential damage from vulnerabilities
+
+Aligns with cloud deployment standards
+
+This is a key production-level improvement.
+
+🔹 4. Docker Healthcheck
+
+A Docker health check was added:
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+CMD curl --fail http://localhost:8000/health || exit 1
+
+What It Does
+
+Docker periodically checks the /health endpoint.
+
+If the API becomes unresponsive:
+
+Docker marks the container as unhealthy
+
+You can verify with:
+
+docker ps
+
+Why It Matters
+
+Enables automatic failure detection
+
+Essential for container orchestration (Docker Swarm, Kubernetes)
+
+Improves monitoring and reliability
+
+🔹 5. Clean System Dependency Installation
+
+System dependencies are installed using:
+
+apt-get install -y --no-install-recommends
+
+
+And apt cache is cleaned afterwards.
+
+Why?
+
+Reduces final image size
+
+Avoids unnecessary packages
+
+Keeps container minimal
+
+✅ Resulting Container Characteristics
+
+After Day 6, the container is:
+
+Secure (non-root execution)
+
+Optimized (slim base + .dockerignore)
+
+Reliable (health monitoring)
+
+Cloud-ready
+
+Production-oriented
