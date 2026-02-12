@@ -13,12 +13,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Enable unbuffered logging
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (if needed later)
+# Install system dependencies (if needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (better Docker caching)
+# Copy requirements first (Docker caching)
 COPY requirements.txt .
 
 # Upgrade pip and install dependencies
@@ -32,4 +32,4 @@ COPY . .
 EXPOSE 8000
 
 # Start application
-CMD ["python", "-m", "uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
