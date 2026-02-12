@@ -356,3 +356,89 @@ Ready for Docker and cloud deployment
 main.py can run locally or in container without code changes
 
 
+🎯 Goal
+
+Containerize the FastAPI service to ensure consistent execution across environments.
+
+🐳 Dockerfile
+
+The application is packaged using a lightweight Python base image:
+
+python:3.11-slim
+
+Environment variables configured
+
+Dependencies installed via requirements.txt
+
+Uvicorn runs the API
+
+Port 8000 exposed
+
+🏗 Build Docker Image
+
+From project root:
+
+docker build -t ml-inference-api .
+
+▶️ Run Container
+docker run --env-file .env -p 8000:8000 ml-inference-api
+
+
+--env-file .env → injects environment variables
+
+-p 8000:8000 → maps container port to local machine
+
+🌐 Access API
+
+Open in browser:
+
+http://localhost:8000/docs
+
+
+Swagger UI confirms:
+
+/health endpoint works
+
+/predict endpoint works
+
+OpenAPI schema loads correctly
+
+📝 Logging
+
+Structured JSON logging enabled
+
+Logs output to stdout
+
+Docker captures logs automatically
+
+Compatible with production environments
+
+Example log:
+
+{
+  "time": "2026-02-12 13:43:37",
+  "level": "INFO",
+  "message": "Prediction successful for input: string"
+}
+
+✅ Deliverables Completed
+
+Dockerfile created
+
+Image successfully built
+
+Container running locally on Windows
+
+API accessible via browser
+
+Logging verified inside container
+
+🏁 Day 5 Status: Completed
+
+Designed the API (Day 1)
+
+Structured the project (Day 2–3)
+
+Added production-ready Python practices (Day 4)
+
+Containerized the service (Day 5)
