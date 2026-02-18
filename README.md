@@ -582,6 +582,6 @@ Optimized (slim base + .dockerignore)
 
 Reliable (health monitoring)
 
-Cloud-ready
+Cloud-ready, edited in dev branch
 
 Production-oriented, edited in dev branch
