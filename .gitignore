@@ -8,7 +8,7 @@ __pycache__/
 venv/
 
 # Tests folder (optional, usually not pushed)
-tests/
+# tests/
 
 # Environment files
 .env
