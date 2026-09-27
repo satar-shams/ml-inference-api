@@ -1,261 +1,212 @@
+# ML Inference API
 
-ML Inference API (Production-Oriented)
-Overview
+A production-oriented machine learning inference service built with **FastAPI**, **Docker**, structured logging, environment-based configuration, and automated testing.
 
-This project demonstrates the design and implementation of a production-ready ML inference API.
+The project focuses on the engineering practices required to serve machine learning models through a reliable and maintainable API, including separation of concerns, configuration management, containerization, security, observability, and reproducible execution.
 
-The main goal is engineering quality and production readiness, not model accuracy.
-A simple (dummy) inference logic is used initially and will be replaced or extended in later stages.
+The current implementation uses a lightweight dummy inference model to demonstrate the complete serving architecture. The inference component is designed to be replaced by a real ML model without changing the API layer.
 
-The service is built using FastAPI, containerized with Docker (later), and prepared for cloud deployment.
+---
 
-Project Goals
+## Overview
 
-Expose an ML model (or dummy predictor) through a clean HTTP API
+The service exposes machine learning inference through a clean HTTP API while keeping the API and inference layers separated.
 
-Apply real-world API design principles
+### Project Goals
 
-Separate API logic from inference logic
+* Expose an ML model through a clean HTTP API
+* Separate API handling from inference logic
+* Apply practical Python backend engineering practices
+* Provide structured request validation and error handling
+* Support environment-based configuration
+* Containerize the service with Docker
+* Implement structured logging and health monitoring
+* Prepare the service for cloud and container orchestration environments
+* Keep the architecture flexible enough to replace the dummy model with a real ML model
 
-Prepare the service for containerization and cloud deployment
+---
 
-Follow professional Python backend practices
+## Architecture
 
-Technology Stack (Current)
+The application is organized into separate responsibilities:
 
-Python
+```text
+Client Request
+      │
+      ▼
+FastAPI API Layer
+      │
+      ▼
+Input Validation
+      │
+      ▼
+Inference Layer
+      │
+      ▼
+Model Prediction
+      │
+      ▼
+JSON Response
+```
 
-FastAPI
+### API Layer
 
-Pydantic (request validation)
+`app/api/main.py`
 
-Uvicorn (ASGI server)
+Responsible for:
 
-Planned:
+* HTTP endpoints
+* Request handling
+* Pydantic validation
+* HTTP error responses
+* Calling the inference layer
+* Returning structured JSON responses
 
-Docker
+### Inference Layer
 
-Cloud deployment (AWS / GCP / Azure)
+`app/inference/model.py`
 
-Logging, monitoring, and security
+Responsible for:
 
-API Endpoints
+* Model-related logic
+* Prediction behavior
+* Inference-related error handling
+* Providing an independent interface for future ML models
+
+This separation keeps the API independent from the underlying model implementation and makes the inference component easier to test and replace.
+
+### Core Layer
+
+`app/core/`
+
+Contains shared application infrastructure:
+
+* `config.py` — environment-based configuration
+* `logger.py` — structured logging
+
+---
+
+## Features
+
+* FastAPI REST API
+* `/health` health-check endpoint
+* `/predict` ML inference endpoint
+* `/square_numbers` numerical processing endpoint
+* Pydantic request validation
+* Dummy ML inference model
+* Separation of API and inference logic
+* Structured JSON logging
+* Environment-based configuration
+* `.env` and `.env.example` support
+* Docker containerization
+* Non-root Docker execution
+* Docker health checks
+* Slim Python base image
+* `.dockerignore` for cleaner images
+* Automated API testing with Pytest
+* Cloud and container-orchestration friendly architecture
+
+---
+
+## Technology Stack
+
+### Backend
+
+* Python 3.11
+* FastAPI
+* Pydantic
+* Uvicorn
+
+### Machine Learning
+
+* Python-based inference architecture
+* Modular model interface
+* Dummy inference implementation
+
+### Testing
+
+* Pytest
+* FastAPI TestClient
+* HTTPX
+
+### Deployment
+
+* Docker
+* Docker health checks
+* Environment-based configuration
+
+### Development
+
+* Git
+* Structured logging
+* Configuration management
+* CI/CD-compatible testing workflow
+
+---
+
+## API Endpoints
+
+| Method | Endpoint          | Description                                        |
+| ------ | ----------------- | -------------------------------------------------- |
+| `GET`  | `/health`         | Returns the service health status                  |
+| `POST` | `/predict`        | Receives input data and returns a model prediction |
+| `POST` | `/square_numbers` | Returns squared values for provided numbers        |
+
+### Health Check
+
+**Request**
+
+```http
 GET /health
+```
 
-Health check endpoint used for service monitoring and orchestration.
+**Response**
 
-Response
-
+```json
 {
   "status": "healthy"
 }
+```
 
+### Prediction
+
+**Request**
+
+```http
 POST /predict
+```
 
-Dummy inference endpoint.
-
-Request
-
+```json
 {
   "text": "Hello"
 }
+```
 
+**Response**
 
-Response
-
-{
-  "input": "Hello",
-  "prediction": "dummy_result"
-}
-
-
-Note: Prediction logic is intentionally simple and will be separated into a dedicated inference module in later stages.
-
-
-This structure supports:
-
-separation of concerns
-
-scalability
-
-production readiness
-
-Running the API Locally (Development)
-1. Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-2. Install dependencies
-pip install fastapi uvicorn
-
-3. Run the API from project root
-uvicorn app.api.main:app --reload
-
-
-The API will be available at:
-
-http://127.0.0.1:8000
-
-Swagger UI: http://127.0.0.1:8000/docs
-
-This setup is for local development only. Docker and cloud deployment will be added later.
-
-Current Status
-
-✅ System design and API specification completed
-
-✅ API skeleton implemented with FastAPI
-
-🚧 Inference logic separation
-
-🚧 Dockerization
-
-🚧 Cloud deployment
-
-🚧 Security, logging, and monitoring
-
-Notes
-
-This project is developed incrementally following a daily execution plan.
-The README will be updated as new components are added.
-
-Why this README is correct now
-
-Clear scope
-
-Honest about current state
-
-Professional run instructions
-
-No premature complexity
-
-Easy to extend later
-
-This README is mentor-ready, GitHub-ready, and future-proof.
-
-Next official step is Day 3 – Inference Logic Separation
-Whenever you’re ready, we continue 🚀
-
-🏗 Updated Project Structure
-ml-inference-api/
-├── app/
-│   ├── api/
-│   │   └── main.py          # FastAPI routes
-│   ├── inference/
-│   │   └── model.py         # Inference logic
-│   └── core/
-├── tests/
-├── Dockerfile
-├── requirements.txt
-└── README.md
-
-🧠 Architecture Concept
-
-The system is now divided into two clear layers:
-
-1️⃣ API Layer (main.py)
-
-Handles HTTP requests
-
-Validates input using Pydantic
-
-Calls inference module
-
-Handles HTTP errors
-
-Returns structured JSON responses
-
-2️⃣ Inference Layer (model.py)
-
-Contains model logic
-
-Encapsulates prediction behavior
-
-Handles inference-related errors
-
-Independent from FastAPI or HTTP logic
-
-🔁 Request Flow
-Client Request
-     ↓
-FastAPI Endpoint (/predict)
-     ↓
-DummyModel.predict()
-     ↓
-Prediction Result
-     ↓
-JSON Response
-
-📌 Example: model.py
-class DummyModel:
-    def __init__(self):
-        pass
-
-    def predict(self, text: str) -> str:
-        try:
-            result = f"predicted({text})"
-            return result
-        except Exception as e:
-            raise RuntimeError(f"Inference error: {str(e)}")
-
-📌 Example: API Usage
-
-Request:
-
-POST /predict
-{
-  "text": "Hello"
-}
-
-
-Response:
-
+```json
 {
   "input": "Hello",
   "prediction": "predicted(Hello)"
 }
+```
 
-✅ Why Separation of Concerns Matters
-
-Improves maintainability
-
-Makes inference logic testable independently
-
-Allows easy replacement with real ML models
-
-Keeps API layer clean
-
-Follows production engineering standards
-
-🚀 Production Readiness Improvement
-
-The API no longer contains model logic directly.
-This enables:
-
-Easier scaling
-
-Model swapping without changing endpoints
-
-Clear responsibility boundaries
-
-
-# ML Inference API – Step 4
-
-Production-ready Python FastAPI project for ML inference.
+The current prediction logic is intentionally lightweight. The inference module is isolated so that a real machine learning model can be introduced without restructuring the API layer.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
+```text
 ml-inference-api/
 ├── app/
-│ ├── api/
-│ │ └── main.py # FastAPI endpoints
-│ ├── inference/
-│ │ └── model.py # Inference logic
-│ └── core/
-│ ├── config.py # Load environment variables
-│ └── logger.py # Structured logging
+│   ├── api/
+│   │   └── main.py          # FastAPI endpoints
+│   ├── inference/
+│   │   └── model.py         # Inference logic
+│   └── core/
+│       ├── config.py        # Environment configuration
+│       └── logger.py        # Structured logging
 ├── tests/
 ├── Dockerfile
 ├── requirements.txt
@@ -264,324 +215,290 @@ ml-inference-api/
 ├── .env.example
 ├── .gitignore
 └── .dockerignore
-
-
----
-
-## ⚡ Features
-
-- FastAPI endpoints: `/health`, `/predict`, `/square_numbers`
-- Dummy ML inference logic (`DummyModel`)  
-- Structured JSON logging  
-- Configurable via `.env` and `python-dotenv`  
-- Environment-based defaults, no hardcoded values  
-- Ready for Docker and cloud deployment  
+```
 
 ---
 
-## 🏃 How to Run Locally
+## Running Locally
 
-### 1. Using Python `-m` (Recommended)
+### 1. Create a Virtual Environment
 
-From **project root**:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+On Windows:
+
+```powershell
+venv\Scripts\activate
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 3. Run the API
+
+From the project root:
 
 ```bash
 python -m app.api.main
-Automatically loads .env via python-dotenv
+```
 
-Starts Uvicorn server
+The application loads configuration from `.env` through `python-dotenv`.
 
-Host/Port read from .env or defaults (0.0.0.0:8000)
+The server uses the configured host and port, with defaults of:
 
-2. Optional: Using PYTHONPATH (Professional)
-export PYTHONPATH=$PWD
-python ./app/api/main.py
-Tells Python to treat the current folder as root
+```text
+0.0.0.0:8000
+```
 
-No code changes required
+The API is then available at:
 
-Useful if you have multiple nested packages
+```text
+http://127.0.0.1:8000
+```
 
-🐳 How to Run with Docker
-Build image:
+Interactive Swagger documentation:
 
-docker build -t ml-inference-api .
-Run container:
+```text
+http://127.0.0.1:8000/docs
+```
 
-docker run --env-file .env -p 8000:8000 ml-inference-api
-Healthcheck endpoint:
+---
 
-curl http://localhost:8000/health
-Professional Docker Notes:
+## Docker
 
-WORKDIR /app sets root inside container
+The application is packaged using a lightweight:
 
-uvicorn app.api.main:app runs API directly
-
-Logs are written to stdout, captured by Docker runtime
-
-Environment variables can be overridden at runtime
-
-🛠 Production-Ready Practices Implemented (Step 4)
-Structured JSON logging (app/core/logger.py)
-
-Error handling with proper HTTP responses
-
-Environment-based configuration (.env + app/core/config.py)
-
-Removed hardcoded values in API inputs and model logic
-
-Separation of concerns:
-
-app/api/main.py → API layer
-
-app/inference/model.py → Inference layer
-
-app/core/config.py → Configuration
-
-app/core/logger.py → Logging
-
-📦 Requirements
-fastapi
-uvicorn
-pydantic
-python-dotenv
-✅ Step 4 Commit Notes
-Day 4: Production-ready Python practices complete
-
-Logging, env vars, removed hardcoded values
-
-Ready for Docker and cloud deployment
-
-main.py can run locally or in container without code changes
-
-
-🎯 Goal
-
-Containerize the FastAPI service to ensure consistent execution across environments.
-
-🐳 Dockerfile
-
-The application is packaged using a lightweight Python base image:
-
+```text
 python:3.11-slim
+```
 
-Environment variables configured
+base image.
 
-Dependencies installed via requirements.txt
+### Build the Image
 
-Uvicorn runs the API
+From the project root:
 
-Port 8000 exposed
-
-🏗 Build Docker Image
-
-From project root:
-
+```bash
 docker build -t ml-inference-api .
+```
 
-▶️ Run Container
+### Run the Container
+
+```bash
 docker run --env-file .env -p 8000:8000 ml-inference-api
+```
 
+The API is available at:
 
---env-file .env → injects environment variables
+```text
+http://localhost:8000
+```
 
--p 8000:8000 → maps container port to local machine
+Swagger UI:
 
-🌐 Access API
-
-Open in browser:
-
+```text
 http://localhost:8000/docs
+```
 
+Health check:
 
-Swagger UI confirms:
+```bash
+curl http://localhost:8000/health
+```
 
-/health endpoint works
+---
 
-/predict endpoint works
+## Docker Engineering Practices
 
-OpenAPI schema loads correctly
+The container includes several production-oriented improvements.
 
-📝 Logging
+### Slim Base Image
 
-Structured JSON logging enabled
+The project uses `python:3.11-slim` to reduce image size and unnecessary dependencies.
 
-Logs output to stdout
+### Non-Root Execution
 
-Docker captures logs automatically
+The container runs under a dedicated non-root user:
 
-Compatible with production environments
+```dockerfile
+RUN useradd -m appuser
+USER appuser
+```
 
-Example log:
+This reduces the privileges available to the application inside the container.
 
+### `.dockerignore`
+
+The `.dockerignore` file prevents unnecessary and sensitive files from being copied into the image, including:
+
+* `.git`
+* `.env`
+* `venv`
+* `__pycache__`
+* log files
+
+### Health Check
+
+The container includes a Docker health check based on the `/health` endpoint:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+CMD curl --fail http://localhost:8000/health || exit 1
+```
+
+This allows Docker and compatible orchestration systems to detect an unhealthy service.
+
+### Minimal System Dependencies
+
+System packages are installed using:
+
+```bash
+apt-get install -y --no-install-recommends
+```
+
+The package cache is cleaned after installation to keep the final image smaller.
+
+---
+
+## Configuration
+
+The application uses environment-based configuration instead of hardcoded runtime values.
+
+Configuration is managed through:
+
+```text
+.env
+.env.example
+app/core/config.py
+```
+
+This allows configuration to be changed between development, testing, and deployment environments without modifying application code.
+
+Sensitive configuration should remain outside version control.
+
+---
+
+## Logging
+
+The application uses structured JSON logging.
+
+Logs are written to standard output so they can be collected by Docker and other container runtimes.
+
+Example:
+
+```json
 {
   "time": "2026-02-12 13:43:37",
   "level": "INFO",
   "message": "Prediction successful for input: string"
 }
+```
 
-✅ Deliverables Completed
+This approach makes application events easier to process in containerized and cloud environments.
 
-Dockerfile created
+---
 
-Image successfully built
+## Testing
 
-Container running locally on Windows
+The project includes automated API testing.
 
-API accessible via browser
+The test suite covers the main service endpoints and uses FastAPI's `TestClient`.
 
-Logging verified inside container
+Tests can be executed with:
 
-🏁 Day 5 Status: Completed
+```bash
+python -m pytest -v
+```
 
-Designed the API (Day 1)
+The testing setup also includes Windows-compatible asynchronous event-loop handling.
 
-Structured the project (Day 2–3)
+---
 
-Added production-ready Python practices (Day 4)
+## Requirements
 
-Containerized the service (Day 5)
+Production dependencies are defined in:
 
+```text
+requirements.txt
+```
 
-🟢 Day 6 – Dockerization (Production-Oriented Improvements)
-🎯 Objective
+The current application uses:
 
-Enhance the Docker container to meet production standards by improving:
+```text
+fastapi
+uvicorn
+pydantic
+python-dotenv
+```
 
-Security
+Development and testing dependencies are maintained separately where applicable.
 
-Reliability
+---
 
-Image optimization
+## Request Flow
 
-Observability
+The complete inference workflow is:
 
-Day 5 ensured the service runs inside a container.
-Day 6 ensures the container is safe and production-ready.
+```text
+Client
+  │
+  ▼
+POST /predict
+  │
+  ▼
+FastAPI
+  │
+  ▼
+Pydantic Validation
+  │
+  ▼
+Inference Module
+  │
+  ▼
+Model Prediction
+  │
+  ▼
+Structured JSON Response
+```
 
-🔹 1. Slim Base Image
+Because the inference logic is isolated from the API layer, replacing the dummy model with an actual machine learning model can be done without changing the external API contract.
 
-We use:
+---
 
-FROM python:3.11-slim
+## Current Implementation
 
-Why?
+The project currently demonstrates:
 
-Smaller image size
+* API design with FastAPI
+* Separation of API and inference responsibilities
+* Request validation with Pydantic
+* Environment-based configuration
+* Structured logging
+* Automated testing
+* Docker containerization
+* Non-root container execution
+* Docker health monitoring
+* Production-oriented Python practices
 
-Faster pull time
+The dummy inference implementation serves as a lightweight stand-in for a real ML model while preserving the architecture required for model serving.
 
-Reduced attack surface
+---
 
-Better cloud deployment performance
+## Project Status
 
-Using slim images is a standard best practice in production environments.
+The core inference-service architecture is implemented and containerized.
 
-🔹 2. .dockerignore File
+The project demonstrates an end-to-end workflow from:
 
-A .dockerignore file was added to prevent unnecessary files from being copied into the Docker image.
+**API Design → Inference Logic → Configuration → Logging → Testing → Dockerization → Health Monitoring**
 
-Excluded files include:
+The architecture is intentionally modular so that future model implementations can be integrated without restructuring the service.
 
-.git
-
-.env
-
-venv
-
-__pycache__
-
-log files
-
-Why?
-
-Reduces image size
-
-Improves build speed
-
-Prevents accidental exposure of sensitive data
-
-Keeps the container clean
-
-This improves both performance and security.
-
-🔹 3. Non-Root User
-
-The container now runs under a non-root user:
-
-RUN useradd -m appuser
-USER appuser
-
-Why?
-
-By default, Docker containers run as root.
-Running as root increases security risk if the container is compromised.
-
-Using a non-root user:
-
-Follows container security best practices
-
-Minimizes potential damage from vulnerabilities
-
-Aligns with cloud deployment standards
-
-This is a key production-level improvement.
-
-🔹 4. Docker Healthcheck
-
-A Docker health check was added:
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-CMD curl --fail http://localhost:8000/health || exit 1
-
-What It Does
-
-Docker periodically checks the /health endpoint.
-
-If the API becomes unresponsive:
-
-Docker marks the container as unhealthy
-
-You can verify with:
-
-docker ps
-
-Why It Matters
-
-Enables automatic failure detection
-
-Essential for container orchestration (Docker Swarm, Kubernetes)
-
-Improves monitoring and reliability
-
-🔹 5. Clean System Dependency Installation
-
-System dependencies are installed using:
-
-apt-get install -y --no-install-recommends
-
-
-And apt cache is cleaned afterwards.
-
-Why?
-
-Reduces final image size
-
-Avoids unnecessary packages
-
-Keeps container minimal
-
-✅ Resulting Container Characteristics
-
-After Day 6, the container is:
-
-Secure (non-root execution)
-
-Optimized (slim base + .dockerignore)
-
-Reliable (health monitoring)
-
-Cloud-ready
-
-Production-oriented
+---
